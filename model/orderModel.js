@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Address = require('./addressModel');
 
 const orderSchema = new mongoose.Schema({
 	user: {
@@ -17,6 +18,7 @@ const orderSchema = new mongoose.Schema({
 			quantity: { type: Number, default: 1 },
 		},
 	],
+	adresse: Address.schema,
 	status: { type: String, enum: ['pending', 'completed'], default: 'pending' },
 	createdAt: { type: Date, default: Date.now },
 });

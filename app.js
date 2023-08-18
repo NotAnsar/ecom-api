@@ -1,12 +1,20 @@
 const dotenv = require('dotenv');
+const cors = require('cors');
 dotenv.config();
 const express = require('express');
 const authRouter = require('./router/authRouter');
+const productRouter = require('./router/productRouter');
+const orderRouter = require('./router/orderRouter');
+const userRouter = require('./router/userRouter');
 const { default: mongoose } = require('mongoose');
+const AppError = require('./utils/appError');
 
 const app = express();
 
+const corsOptions = { origin: process.env.CLIENT_URL, credentials: true };
+
 app.use(express.json());
+app.use(cors(corsOptions));
 
 // CONNECTING TO DB
 mongoose
@@ -22,6 +30,26 @@ mongoose
 
 // ROUTERS
 app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/products', productRouter);
+app.use('/api/v1/order', orderRouter);
+app.use('/api/v1/users', userRouter);
+
+app.all('*', (req, res, next) => {
+	next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+});
+
+// Register the error-handling middleware after your other routes and middlewares
+const errorHandler = (err, req, res, next) => {
+	const statusCode = err.status || 500;
+	const message = err.message || 'Something went wrong.';
+
+	res.status(statusCode).json({
+		status: 'fail',
+		message: message,
+		error: err,
+	});
+};
+app.use(errorHandler);
 
 // RUNNING THE SERVER
 const port = process.env.PORT || 3000;

@@ -18,30 +18,45 @@ const productSchema = new mongoose.Schema({
 		type: Number,
 		required: [true, 'Please provide a stock!'],
 	},
-
 	image: {
-		type: [Number],
+		type: [String],
 		required: [true, 'Please provide an image!'],
 	},
-	categorie: {
+	category: {
 		type: mongoose.Schema.ObjectId,
-		ref: 'Categorie',
+		ref: 'Category',
+		required: [true, 'Please provide a category id!'],
 	},
 	brand: {
 		type: mongoose.Schema.ObjectId,
 		ref: 'Brand',
+		required: [true, 'Please provide a brand id!'],
 	},
 });
 
 const brandSchema = new mongoose.Schema({
-	name: { type: String, required: true },
+	name: {
+		type: String,
+		required: true,
+		unique: [true, 'this brand already exists'],
+	},
 });
 const categorySchema = new mongoose.Schema({
-	name: { type: String, required: true },
+	name: {
+		type: String,
+		required: true,
+		unique: [true, 'this category already exists'],
+	},
 });
 
 const Category = mongoose.model('Category', categorySchema);
 const Brand = mongoose.model('Brand', brandSchema);
-const Product = mongoose.model('User', productSchema);
+
+productSchema.pre(/^find/, async function (next) {
+	this.populate('brand').populate('category');
+	next();
+});
+
+const Product = mongoose.model('Product', productSchema);
 
 module.exports = { Product, Category, Brand };

@@ -1,13 +1,14 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const validator = require('validator');
+const Address = require('./addressModel');
 
-const addressSchema = new mongoose.Schema({
-	city: { type: String, required: true },
-	adress: { type: String, required: true },
-	country: { type: String, required: true },
-	zipCode: { type: Number, required: true },
-});
+// const addressSchema = new mongoose.Schema({
+// 	city: { type: String, required: true },
+// 	adress: { type: String, required: true },
+// 	country: { type: String, required: true },
+// 	zipCode: { type: Number, required: true },
+// });
 
 const userSchema = new mongoose.Schema({
 	firstName: {
@@ -25,6 +26,7 @@ const userSchema = new mongoose.Schema({
 		lowercase: true,
 		validate: [validator.isEmail, 'Please provide a valid email'],
 	},
+	tel: { type: String },
 	role: {
 		type: String,
 		enum: ['user', 'admin'],
@@ -36,21 +38,28 @@ const userSchema = new mongoose.Schema({
 		minlength: 8,
 		select: false,
 	},
-	adresse: [addressSchema],
+	adresse: [Address.schema],
 });
 
+// hash password
 userSchema.pre('save', async function (next) {
 	if (!this.isModified('password')) return next();
-	console.log('hasing');
+
 	try {
-		const hashedPass = await bcrypt.hash(password, 12);
+		const hashedPass = await bcrypt.hash(this.password, 12);
 		this.password = hashedPass;
 		next();
 	} catch (error) {
-		console.log(error);
 		return next(error);
 	}
 });
+
+// verify password
+userSchema.methods.correctPassword = async function (password, userPassword) {
+	const correct = await bcrypt.compare(password, userPassword);
+
+	return correct;
+};
 
 const User = mongoose.model('User', userSchema);
 
