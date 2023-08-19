@@ -8,6 +8,8 @@ dotenv.config();
 const corsOptions = {
 	origin: process.env.CLIENT_URL,
 	credentials: true,
+	methods: 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
+	allowedHeaders: 'Authorization', // Add this line to allow the Authorization header
 };
 
 const app = express();
