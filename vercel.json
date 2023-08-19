@@ -5,7 +5,13 @@
 	"headers": [
 		{
 			"source": "/(.*)",
-			"headers": [{ "key": "access-control-allow-origin", "value": "*" }]
+			"headers": [
+				{ "key": "access-control-allow-origin", "value": "*" },
+				{
+					"key": "access-control-allow-methods",
+					"value": "GET,PUT,POST,DELETE,PATCH,OPTIONS"
+				}
+			]
 		}
 	]
 }
