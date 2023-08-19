@@ -5,7 +5,8 @@ const { default: mongoose } = require('mongoose');
 const AppError = require('./utils/appError');
 dotenv.config();
 
-const corsOptions = { origin: process.env.CLIENT_URL, credentials: true };
+// const corsOptions = { origin: process.env.CLIENT_URL, credentials: true };
+const corsOptions = { origin: '*' };
 
 const app = express();
 app.get('/', (req, res) => {
@@ -14,6 +15,11 @@ app.get('/', (req, res) => {
 
 app.use(express.json());
 app.use(cors(corsOptions));
+app.use(
+	cors({
+		methods: ['GET', 'POST', 'DELETE', 'UPDATE', 'PUT', 'PATCH'],
+	})
+);
 
 // CONNECTING TO DB
 mongoose
