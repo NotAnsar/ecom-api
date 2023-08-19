@@ -11,13 +11,13 @@ const AppError = require('./utils/appError');
 
 const app = express();
 
-const corsOptions = { origin: process.env.CLIENT_URL, credentials: true };
+// const corsOptions = { origin: process.env.CLIENT_URL, credentials: true };
 
 app.get('/', (req, res) => {
 	res.json('hello');
 });
 app.use(express.json());
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 
 // CONNECTING TO DB
 // mongoose
@@ -55,6 +55,7 @@ app.use(cors(corsOptions));
 // app.use(errorHandler);
 
 // RUNNING THE SERVER
+
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
