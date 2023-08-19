@@ -5,7 +5,6 @@ const { default: mongoose } = require('mongoose');
 const AppError = require('./utils/appError');
 dotenv.config();
 
-console.log();
 if (!process.env.CLIENT_URL) {
 	app.get('/', (req, res) => {
 		res.json(process.env.CLIENT_URL);
