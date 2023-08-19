@@ -26,6 +26,7 @@ exports.addBrand = async (req, res) => {
 
 exports.getBrand = async (req, res) => {
 	try {
+		console.log('brand');
 		const brands = await Brand.find();
 
 		res.status(201).json({

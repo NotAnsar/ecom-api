@@ -1,21 +1,17 @@
 const dotenv = require('dotenv');
-const cors = require('cors');
-dotenv.config();
 const express = require('express');
-const authRouter = require('./router/authRouter');
-const productRouter = require('./router/productRouter');
-const orderRouter = require('./router/orderRouter');
-const userRouter = require('./router/userRouter');
+const cors = require('cors');
 const { default: mongoose } = require('mongoose');
 const AppError = require('./utils/appError');
-
-const app = express();
+dotenv.config();
 
 const corsOptions = { origin: process.env.CLIENT_URL, credentials: true };
 
+const app = express();
 app.get('/', (req, res) => {
 	res.json('hello');
 });
+
 app.use(express.json());
 app.use(cors(corsOptions));
 
@@ -31,7 +27,12 @@ mongoose
 	.then(() => console.log('DB connection successful!'))
 	.catch((err) => console.log(err));
 
-// // ROUTERS
+const authRouter = require('./router/authRouter');
+const productRouter = require('./router/productRouter');
+const orderRouter = require('./router/orderRouter');
+const userRouter = require('./router/userRouter');
+
+// ROUTERS
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/products', productRouter);
 app.use('/api/v1/order', orderRouter);
