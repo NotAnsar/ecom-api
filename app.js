@@ -28,6 +28,10 @@ mongoose
 	.then(() => console.log('DB connection successful!'))
 	.catch((err) => console.log(err));
 
+app.get('/', (req, res) => {
+	res.json('hello');
+});
+
 // ROUTERS
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/products', productRouter);
