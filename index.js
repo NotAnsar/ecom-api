@@ -5,8 +5,12 @@ const { default: mongoose } = require('mongoose');
 const AppError = require('./utils/appError');
 dotenv.config();
 
-// const corsOptions = { origin: process.env.CLIENT_URL, credentials: true };
-const corsOptions = { origin: '*' };
+// const corsOptions = {
+// 	origin: process.env.CLIENT_URL,
+// 	credentials: true,
+// 	methods: ['GET', 'POST', 'DELETE', 'UPDATE', 'PUT', 'PATCH'],
+// };
+// const corsOptions = { origin: '*' };
 
 const app = express();
 app.get('/', (req, res) => {
@@ -14,12 +18,19 @@ app.get('/', (req, res) => {
 });
 
 app.use(express.json());
-app.use(cors(corsOptions));
-app.use(
-	cors({
-		methods: ['GET', 'POST', 'DELETE', 'UPDATE', 'PUT', 'PATCH'],
-	})
-);
+// app.use(cors(corsOptions));
+
+app.use((req, res, next) => {
+	//allow access from every, elminate CORS
+	res.setHeader('Access-Control-Allow-Origin', '*');
+	res.removeHeader('x-powered-by');
+	//set the allowed HTTP methods to be requested
+	res.setHeader('Access-Control-Allow-Methods', 'POST');
+	//headers clients can use in their requests
+	res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+	//allow request to continue and be handled by routes
+	next();
+});
 
 // CONNECTING TO DB
 mongoose
