@@ -1,9 +1,13 @@
 const AppError = require('../utils/appError');
 const Order = require('../model/orderModel');
+const stripe = require('stripe')(process.env.STRIPE_SECRET);
 const catchAsync = require('../utils/catchAsync');
+const { Product } = require('../model/productModel');
+const calculateOrderTotal = require('../utils/calculateOrderTotal');
 
 exports.addNewOrder = catchAsync(async (req, res) => {
 	const { products, adresse } = req.body;
+
 	const user = req.user;
 
 	const newOrder = await Order.create({ products, user, adresse });
@@ -12,6 +16,33 @@ exports.addNewOrder = catchAsync(async (req, res) => {
 		status: 'success',
 		message: 'New Order Created',
 		data: newOrder,
+	});
+});
+
+exports.addNewOrderWithPayment = catchAsync(async (req, res) => {
+	const { products } = req.body;
+
+	const orderTotal = await calculateOrderTotal(products);
+
+	if (orderTotal < 0) {
+		throw new AppError(
+			'Error fetching product prices or quantity is less than minimum allowed value (1)',
+			403
+		);
+	}
+
+	// Create a Payment Intent to authorize the payment
+	const paymentIntent = await stripe.paymentIntents.create({
+		amount: Math.round(orderTotal * 100), // in cents
+		currency: 'usd',
+		payment_method_types: ['card'],
+	});
+
+	res.status(201).json({
+		status: 'success',
+		message: 'Here is your Client Secret',
+		data: products,
+		client_secret: paymentIntent.client_secret,
 	});
 });
 

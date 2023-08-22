@@ -9,7 +9,7 @@ const corsOptions = {
 	origin: process.env.CLIENT_URL,
 	credentials: true,
 	methods: 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
-	allowedHeaders: 'Authorization,Content-Type', // Add "Content-Type" to the list of allowed headers
+	allowedHeaders: 'Authorization,Content-Type',
 };
 
 const app = express();

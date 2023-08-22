@@ -15,7 +15,7 @@ const orderSchema = new mongoose.Schema({
 				ref: 'Product',
 				required: true,
 			},
-			quantity: { type: Number, default: 1 },
+			quantity: { type: Number, default: 1, min: 1 },
 		},
 	],
 	adresse: Address.schema,
