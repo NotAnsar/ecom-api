@@ -6,7 +6,7 @@ const AppError = require('./utils/appError');
 dotenv.config();
 
 const corsOptions = {
-	origin: process.env.CLIENT_URL,
+	origin: process.env.CLIENT_URL.split(','),
 	credentials: true,
 	methods: 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
 	allowedHeaders: 'Authorization,Content-Type',
