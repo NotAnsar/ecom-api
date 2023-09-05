@@ -3,6 +3,8 @@ const express = require('express');
 const cors = require('cors');
 const { default: mongoose } = require('mongoose');
 const AppError = require('./utils/appError');
+const path = require('path');
+
 dotenv.config();
 
 const corsOptions = {
@@ -13,6 +15,9 @@ const corsOptions = {
 };
 
 const app = express();
+
+app.use('/images', express.static(path.join(__dirname, 'images')));
+
 app.get('/', (req, res) => {
 	res.json('hello');
 });
@@ -36,12 +41,14 @@ const authRouter = require('./router/authRouter');
 const productRouter = require('./router/productRouter');
 const orderRouter = require('./router/orderRouter');
 const userRouter = require('./router/userRouter');
+const uploadRouter = require('./router/uploadRouter');
 
 // ROUTERS
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/products', productRouter);
 app.use('/api/v1/order', orderRouter);
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/upload', uploadRouter);
 
 app.all('*', (req, res, next) => {
 	next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));

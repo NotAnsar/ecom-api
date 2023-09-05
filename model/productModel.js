@@ -7,20 +7,18 @@ const productSchema = new mongoose.Schema({
 	},
 	price: {
 		type: Number,
-		required: [true, 'Please tell us your name!'],
+		required: [true, 'Please give us The price!'],
+		min: 1,
 	},
 	description: {
 		type: String,
 		trim: true,
 		required: [true, 'Please Write a description!'],
 	},
-	stock: {
-		type: Number,
-		required: [true, 'Please provide a stock!'],
-	},
+
 	image: {
-		type: [String],
-		required: [true, 'Please provide an image!'],
+		type: String,
+		// required: [true, 'Please provide an image!'],
 	},
 	category: {
 		type: mongoose.Schema.ObjectId,

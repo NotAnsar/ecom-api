@@ -1,5 +1,6 @@
 const AppError = require('../utils/appError');
 const { Brand, Product, Category } = require('../model/productModel');
+const catchAsync = require('../utils/catchAsync');
 
 exports.addBrand = async (req, res) => {
 	try {
@@ -26,7 +27,6 @@ exports.addBrand = async (req, res) => {
 
 exports.getBrand = async (req, res) => {
 	try {
-		console.log('brand');
 		const brands = await Brand.find();
 
 		res.status(201).json({
@@ -133,7 +133,34 @@ exports.addProduct = async (req, res) => {
 	}
 };
 
-exports.getProduct = async (req, res) => {
+exports.getProduct = catchAsync(async (req, res) => {
+	const productId = req.params.id;
+
+	const [product, brands, categories] = await Promise.all([
+		Product.findById(productId),
+		Brand.find(),
+		Category.find(),
+	]);
+
+	res.status(201).json({
+		status: 'success',
+		message: 'Product retrieved successfully',
+		data: { product, brands, categories },
+	});
+});
+
+exports.deleteProduct = catchAsync(async (req, res) => {
+	const productId = req.params.id;
+
+	await Product.findByIdAndDelete(productId);
+
+	res.status(201).json({
+		status: 'success',
+		message: 'Product deleted successfully',
+	});
+});
+
+exports.getProducts = async (req, res) => {
 	try {
 		// 1. FILTERING
 		const queryObj = { ...req.query };
